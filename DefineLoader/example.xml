@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	Define Loader
+</project>
+<defined_values>
+	<String>
+		<text>
+			goodbye
+		</text>
+	</String>
+	<int>
+		<value>
+			56
+		</value>
+	</int>
+</defined_values>
