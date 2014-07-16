@@ -10,10 +10,21 @@ public class DefineLoader {
 	Field[] class_fields;
 	String Project;
 	
+	/**
+	 * Initializes DefineLoader object
+	 * @param Project - name of project. Used to check XML file.
+	 */
 	public DefineLoader(String Project){
 		this.Project = Project;
 	}
 	
+	/**
+	 * Loads the define values. Loads all primitive types and Strings
+	 * @param xmlPath
+	 * @param definesClass
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	@SuppressWarnings("rawtypes")
 	public void loadDefines(String xmlPath, Class definesClass) throws IllegalArgumentException, IllegalAccessException{
 		this.xmlPath = xmlPath;
