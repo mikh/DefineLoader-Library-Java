@@ -26,10 +26,16 @@ public class DefineLoader {
 	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("rawtypes")
-	public void loadDefines(String xmlPath, Class definesClass) throws IllegalArgumentException, IllegalAccessException{
+	public boolean loadDefines(String xmlPath, Class definesClass){
 		this.xmlPath = xmlPath;
 		class_fields = definesClass.getFields();
-		parseDefines();
+		try {
+			parseDefines();
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			System.out.println("[ERROR] cantrip.define_loader.DefineLoader error:: Illegal argument or access! Possibly resulting from a faulty xml file. Define Load failed.");
+			return false;
+		}
+		return true;
 	}
 	
 	private void parseDefines() throws IllegalArgumentException, IllegalAccessException{
@@ -42,9 +48,12 @@ public class DefineLoader {
 		ArrayList<ArrayList<String>> results = xml.searchForLeaves("project", searchParameters, parameter_values);
 		if(results.size() != 1 || results.get(0).size() != 1){
 			System.out.println("[ERROR] cantrip.define_loader.DefineLoader error:: error in define xml file. Mulitple <project> fields");
+			throw new IllegalArgumentException();
 		} else{
-			if(!results.get(0).get(0).equals(Project))
+			if(!results.get(0).get(0).equals(Project)){
 				System.out.println("[ERROR]  cantrip.define_loader.DefineLoader error:: error in define xml file. Project field does not match defined project");
+				throw new IllegalArgumentException();
+			}
 			else{
 				for(int ii = 0; ii < class_fields.length; ii++){
 					searchParameters.clear();
@@ -59,11 +68,13 @@ public class DefineLoader {
 						results = xml.searchForLeaves(name, searchParameters, parameter_values);
 						if(results.size() > 1){
 							System.out.println(String.format("[ERROR]  cantrip.define_loader.DefineLoader error:: error in define xml file. Define value returns multiple entries. type = %s name = %s", type, name));
+							throw new IllegalArgumentException();
 						} else if(results.size() == 0){
 							System.out.println(String.format("[WARNING]  cantrip.define_loader.DefineLoader error:: error in define xml file. Define value returns no entries. type = %s name = %s", type, name));
 						} else{
 							if(results.get(0).size() != 1){
 								System.out.println(String.format("[ERROR]  cantrip.define_loader.DefineLoader error:: error in define xml file. Define value returns multiple or no values. type = %s name = %s", type, name));
+								throw new IllegalArgumentException();
 							} else{
 								if(!results.get(0).get(0).equals("")){
 									setValue(f, type, results.get(0).get(0));
